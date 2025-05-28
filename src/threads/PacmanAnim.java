@@ -1,23 +1,29 @@
 package threads;
 
+import components.GameTable;
+import controllers.GameController;
 import models.GameModel;
 import views.GameView;
 
 import javax.swing.*;
 
 public class PacmanAnim implements Runnable {
-    private int pacmanFrame = 0;
+    private boolean pacmanFrame = true;
     private boolean isRunning = true;
+    private static GameTable gameTable;
+
+    public PacmanAnim() {
+        gameTable = GameModel.getGameTable();
+    }
 
     @Override
     public void run() {
         try {
             while (isRunning) {
-                SwingUtilities.invokeLater(() -> {
-                    nextFrame();
+                nextFrame();
 
-                    GameView.repaintGameTable();
-                });
+                SwingUtilities.invokeLater(() -> gameTable.fireTableDataChanged());
+
                 Thread.sleep(150);
             }
         } catch (InterruptedException e) {
@@ -27,16 +33,11 @@ public class PacmanAnim implements Runnable {
     }
 
     public void nextFrame() {
-        pacmanFrame = (pacmanFrame + 1) % 2;
+        pacmanFrame = !pacmanFrame;
+        GameController.setPacmanFrame(pacmanFrame);
     }
 
     public void stop() {
         isRunning = false;
-    }
-
-    public synchronized boolean getPacmanFrame() {
-        if (pacmanFrame == 1) {
-            return true;
-        } else return false;
     }
 }

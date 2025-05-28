@@ -2,6 +2,7 @@ package renderers;
 
 import controllers.GameController;
 import enums.GameField;
+import models.GameModel;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
@@ -9,13 +10,26 @@ import java.awt.*;
 
 public class TableCell extends JLabel implements TableCellRenderer {
     private GameField gameField;
+    private static Image pacmanOpenImg;
+    private static Image pacmanClosedImg;
 
     public TableCell() {
         setOpaque(true);
+
+        ImageIcon pacmanOpenImgIcon = new ImageIcon(getClass().getResource("/assets/pacmanOpen.png"));
+        ImageIcon pacmanClosedImgIcon = new ImageIcon(getClass().getResource("/assets/pacmanClosed.png"));
+
+        Image pacmanOpenImgOg = pacmanOpenImgIcon.getImage();
+        Image pacmanClosedImgOg = pacmanClosedImgIcon.getImage();
+
+        pacmanOpenImg = pacmanOpenImgOg.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        pacmanClosedImg = pacmanClosedImgOg.getScaledInstance(24, 24, Image.SCALE_SMOOTH);
     }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        setIcon(null);
+        setText("");
 
         if (value instanceof GameField) {
             gameField = (GameField) value;
@@ -32,11 +46,11 @@ public class TableCell extends JLabel implements TableCellRenderer {
                 }
 
                 case PLAYER: {
-                    setBackground(Color.BLACK);
-                    if (GameController.getPacmanFrame()) {
-                        setIcon(new ImageIcon(getClass().getResource("/assets/pacmanOpen.png")));
-                    } else
-                        setIcon(new ImageIcon(getClass().getResource("/assets/pacmanClosed.png")));
+                    setBackground(Color.WHITE);
+                    if (GameController.getPacmanFrame())
+                        setIcon(new ImageIcon(pacmanOpenImg));
+                    else
+                        setIcon(new ImageIcon(pacmanClosedImg));
                     break;
                 }
 

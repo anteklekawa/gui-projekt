@@ -22,6 +22,11 @@ public class GameTable extends AbstractTableModel {
     }
 
     @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        return GameField.class;
+    }
+
+    @Override
     public GameField getValueAt(int rowIndex, int columnIndex) {
         return gameTable[rowIndex][columnIndex];
     }

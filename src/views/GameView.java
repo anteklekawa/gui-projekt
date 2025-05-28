@@ -1,6 +1,5 @@
 package views;
 
-import components.GameTable;
 import controllers.GameController;
 import enums.GameField;
 import renderers.TableCell;
@@ -19,18 +18,18 @@ public class GameView extends JFrame {
         setSize(1000, 1000);
 
         this.gameController = gameController;
-        this.gameTable = new JTable(gameController.getGameTable());
+        GameView.gameTable = new JTable(GameController.getGameTable());
         gameTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        gameTable.setRowHeight(20);
+        gameTable.setRowHeight(24);
 
         for (int i = 0; i < gameTable.getColumnCount(); i++) {
             TableColumn column = gameTable.getColumnModel().getColumn(i);
-            column.setPreferredWidth(20);
-            column.setMaxWidth(20);
-            column.setMinWidth(20);
+            column.setPreferredWidth(24);
+            column.setMaxWidth(24);
+            column.setMinWidth(24);
         }
 
-        gameTable.setDefaultRenderer(Object.class, new TableCell());
+        gameTable.setDefaultRenderer(GameField.class, new TableCell());
         gameTable.setShowGrid(false);
         gameTable.setIntercellSpacing(new Dimension(0, 0));
 
@@ -47,8 +46,7 @@ public class GameView extends JFrame {
         setVisible(true);
     }
 
-    public static void repaintGameTable() {
-        gameTable.revalidate();
+    public void repaintGame() {
         gameTable.repaint();
     }
 }

@@ -3,9 +3,9 @@ package models;
 import components.GameTable;
 import controllers.AppController;
 import controllers.GameController;
+import enums.Direction;
 import enums.GameField;
 import threads.PacmanAnim;
-import views.GameView;
 
 import javax.swing.*;
 
@@ -13,6 +13,8 @@ public class GameModel {
     static GameTable gameTable;
     static PacmanAnim pacman;
     static boolean pacmanFrame;
+    static Direction direction = Direction.RIGHT;
+
 
     public static void setMapSize(String[] tab, AppController appController) {
         pacman = new PacmanAnim();
@@ -81,9 +83,6 @@ public class GameModel {
                     }
                     else
                         gameTable.setValueAt(i, columns - wallsCounter - 1, GameField.DOT);
-
-//                    gameTable.setValueAt(i, wallsCounter, GameField.WALL);
-//                    gameTable.setValueAt(i, columns - wallsCounter - 1, GameField.WALL);
                 }
             }
             wallsCounter += 2;
@@ -138,5 +137,62 @@ public class GameModel {
 
     public static GameTable getGameTable() {
         return gameTable;
+    }
+
+    public static void setPacmanFrame(boolean pacmanFrame) {
+        GameModel.pacmanFrame = pacmanFrame;
+    }
+
+    public void movePacman(Direction direction) {
+        GameModel.direction = direction;
+        int oldPosX = getPacmanLocation()[0];
+        int oldPosY = getPacmanLocation()[1];
+
+        switch (direction) {
+            case LEFT: {
+                if (GameController.getGameField(gameTable, oldPosX, oldPosY - 1) != GameField.WALL) {
+                    GameController.setGameTable(gameTable, oldPosX, oldPosY, GameField.EMPTY);
+                    GameController.setGameTable(gameTable, oldPosX, oldPosY - 1, GameField.PLAYER);
+                }
+                break;
+            }
+
+            case RIGHT: {
+                if (GameController.getGameField(gameTable, oldPosX, oldPosY + 1) != GameField.WALL) {
+                    GameController.setGameTable(gameTable, oldPosX, oldPosY, GameField.EMPTY);
+                    GameController.setGameTable(gameTable, oldPosX, oldPosY + 1, GameField.PLAYER);
+                }
+                break;
+            }
+
+            case UP: {
+                if (GameController.getGameField(gameTable, oldPosX - 1, oldPosY) != GameField.WALL) {
+                    GameController.setGameTable(gameTable, oldPosX, oldPosY, GameField.EMPTY);
+                    GameController.setGameTable(gameTable, oldPosX - 1, oldPosY, GameField.PLAYER);
+                }
+                break;
+            }
+
+            case DOWN: {
+                if (GameController.getGameField(gameTable, oldPosX + 1, oldPosY) != GameField.WALL) {
+                    GameController.setGameTable(gameTable, oldPosX, oldPosY, GameField.EMPTY);
+                    GameController.setGameTable(gameTable, oldPosX + 1, oldPosY, GameField.PLAYER);
+                }
+                break;
+            }
+        }
+
+        gameTable.fireTableDataChanged();
+    }
+
+    public static int[] getPacmanLocation() {
+        for (int i = 0; i < gameTable.getRowCount(); i++) {
+            for (int j = 0; j < gameTable.getColumnCount(); j++) {
+                if (gameTable.getValueAt(i, j) == GameField.PLAYER) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return null;
     }
 }
