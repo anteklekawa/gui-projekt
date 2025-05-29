@@ -1,0 +1,36 @@
+package threads;
+
+import controllers.GameController;
+
+import javax.swing.*;
+
+public class PacmanMove implements Runnable {
+    private GameController gameController;
+    private boolean isPacmanMoving;
+
+    public PacmanMove(GameController gameController) {
+        this.gameController = gameController;
+        isPacmanMoving = true;
+    }
+
+    @Override
+    public void run() {
+
+        while (isPacmanMoving) {
+
+            SwingUtilities.invokeLater(() -> {
+                gameController.pacmanMove();
+            });
+
+            try {
+                Thread.sleep(150);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public void stop() {
+        isPacmanMoving = false;
+    }
+}

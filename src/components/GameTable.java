@@ -27,7 +27,7 @@ public class GameTable extends AbstractTableModel {
     }
 
     @Override
-    public GameField getValueAt(int rowIndex, int columnIndex) {
+    public synchronized GameField getValueAt(int rowIndex, int columnIndex) {
         return gameTable[rowIndex][columnIndex];
     }
 

@@ -8,15 +8,14 @@ import views.GameView;
 import javax.swing.*;
 
 public class PacmanAnim implements Runnable {
-    private boolean pacmanFrame = true;
+    private int pacmanFrame = 0;
+    private int frameDirection = 1;
     private boolean isRunning = true;
     private static GameTable gameTable;
     private GameController gameController;
-    private GameModel gameModel;
 
-    public PacmanAnim(GameController gameController, GameModel gameModel) {
-        this.gameModel = gameModel;
-        gameTable = gameModel.getGameTable();
+    public PacmanAnim(GameController gameController) {
+        gameTable = gameController.getGameTable();
         this.gameController = gameController;
     }
 
@@ -37,7 +36,13 @@ public class PacmanAnim implements Runnable {
     }
 
     public void nextFrame() {
-        pacmanFrame = !pacmanFrame;
+        pacmanFrame += frameDirection;
+
+        if (pacmanFrame == 2)
+            frameDirection = -1;
+        else if (pacmanFrame == 0)
+            frameDirection = 1;
+
         gameController.setPacmanFrame(pacmanFrame);
     }
 
