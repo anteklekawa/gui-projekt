@@ -14,10 +14,15 @@ public class GameModel {
     static PacmanAnim pacman;
     static boolean pacmanFrame;
     static Direction direction = Direction.RIGHT;
+    private GameController gameController;
+
+    public GameModel(GameController gameController) {
+        this.gameController = gameController;
+        pacman = new PacmanAnim(gameController, this);
+    }
 
 
     public static void setMapSize(String[] tab, AppController appController) {
-        pacman = new PacmanAnim();
 
         try {
             int parsedRows = Integer.parseInt(tab[0]);
@@ -102,8 +107,8 @@ public class GameModel {
             int row = (int) (Math.random() * rows);
             int column = (int) (Math.random() * columns);
 
-            if (GameController.getGameField(gameTable, row, column) == GameField.DOT) {
-                GameController.setGameTable(gameTable, row, column, GameField.PLAYER);
+            if (gameTable.getValueAt(row, column) == GameField.DOT) {
+                gameTable.setValueAt(row, column, GameField.PLAYER);
                 isPlayerSet = true;
             }
         }
@@ -122,8 +127,8 @@ public class GameModel {
             int row = (int) (Math.random() * rows);
             int column = (int) (Math.random() * columns);
 
-            if (GameController.getGameField(gameTable, row, column) == GameField.DOT) {
-                GameController.setGameTable(gameTable, row, column, GameField.ENEMY);
+            if (gameTable.getValueAt(row, column) == GameField.DOT) {
+                gameTable.setValueAt(row, column, GameField.ENEMY);
                 enemyCounter++;
             }
         }
@@ -131,11 +136,11 @@ public class GameModel {
         appController.showGame();
     }
 
-    public static boolean getPacmanFrame() {
+    public boolean getPacmanFrame() {
         return pacmanFrame;
     }
 
-    public static GameTable getGameTable() {
+    public GameTable getGameTable() {
         return gameTable;
     }
 
@@ -150,33 +155,33 @@ public class GameModel {
 
         switch (direction) {
             case LEFT: {
-                if (GameController.getGameField(gameTable, oldPosX, oldPosY - 1) != GameField.WALL) {
-                    GameController.setGameTable(gameTable, oldPosX, oldPosY, GameField.EMPTY);
-                    GameController.setGameTable(gameTable, oldPosX, oldPosY - 1, GameField.PLAYER);
+                if (gameTable.getValueAt(oldPosX, oldPosY - 1) != GameField.WALL) {
+                    gameTable.setValueAt(oldPosX, oldPosY, GameField.EMPTY);
+                    gameTable.setValueAt(oldPosX, oldPosY - 1, GameField.PLAYER);
                 }
                 break;
             }
 
             case RIGHT: {
-                if (GameController.getGameField(gameTable, oldPosX, oldPosY + 1) != GameField.WALL) {
-                    GameController.setGameTable(gameTable, oldPosX, oldPosY, GameField.EMPTY);
-                    GameController.setGameTable(gameTable, oldPosX, oldPosY + 1, GameField.PLAYER);
+                if (gameTable.getValueAt(oldPosX, oldPosY + 1) != GameField.WALL) {
+                    gameTable.setValueAt(oldPosX, oldPosY, GameField.EMPTY);
+                    gameTable.setValueAt(oldPosX, oldPosY + 1, GameField.PLAYER);
                 }
                 break;
             }
 
             case UP: {
-                if (GameController.getGameField(gameTable, oldPosX - 1, oldPosY) != GameField.WALL) {
-                    GameController.setGameTable(gameTable, oldPosX, oldPosY, GameField.EMPTY);
-                    GameController.setGameTable(gameTable, oldPosX - 1, oldPosY, GameField.PLAYER);
+                if (gameTable.getValueAt(oldPosX - 1, oldPosY) != GameField.WALL) {
+                    gameTable.setValueAt(oldPosX, oldPosY, GameField.EMPTY);
+                    gameTable.setValueAt(oldPosX - 1, oldPosY, GameField.PLAYER);
                 }
                 break;
             }
 
             case DOWN: {
-                if (GameController.getGameField(gameTable, oldPosX + 1, oldPosY) != GameField.WALL) {
-                    GameController.setGameTable(gameTable, oldPosX, oldPosY, GameField.EMPTY);
-                    GameController.setGameTable(gameTable, oldPosX + 1, oldPosY, GameField.PLAYER);
+                if (gameTable.getValueAt(oldPosX + 1, oldPosY) != GameField.WALL) {
+                    gameTable.setValueAt(oldPosX, oldPosY, GameField.EMPTY);
+                    gameTable.setValueAt(oldPosX + 1, oldPosY, GameField.PLAYER);
                 }
                 break;
             }

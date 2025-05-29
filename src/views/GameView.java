@@ -18,7 +18,7 @@ public class GameView extends JFrame {
         setSize(1000, 1000);
 
         this.gameController = gameController;
-        GameView.gameTable = new JTable(GameController.getGameTable());
+        GameView.gameTable = new JTable(gameController.getGameTable());
         gameTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         gameTable.setRowHeight(24);
 
@@ -29,7 +29,7 @@ public class GameView extends JFrame {
             column.setMinWidth(24);
         }
 
-        gameTable.setDefaultRenderer(GameField.class, new TableCell());
+        gameTable.setDefaultRenderer(GameField.class, new TableCell(gameController));
         gameTable.setShowGrid(false);
         gameTable.setIntercellSpacing(new Dimension(0, 0));
 

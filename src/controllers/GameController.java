@@ -17,7 +17,7 @@ public class GameController {
     private GameModel gameModel;
 
     public GameController(AppController appController) {
-        gameModel = new GameModel();
+        gameModel = new GameModel(this);
 
         SwingUtilities.invokeLater(() -> {
             gameView = new GameView(this);
@@ -27,12 +27,16 @@ public class GameController {
             gameView.setVisible(true);
         });
 
-        PacmanAnim pacmanAnim = new PacmanAnim();
+        PacmanAnim pacmanAnim = new PacmanAnim(this, gameModel);
         new Thread(pacmanAnim).start();
     }
 
     public GameView getGameView() {
         return gameView;
+    }
+
+    public GameController getGameController() {
+        return this;
     }
 
     public void initKeyListener() {
@@ -69,23 +73,23 @@ public class GameController {
         gameView.repaint();
     }
 
-    public static GameTable getGameTable() {
-        return GameModel.getGameTable();
+    public GameTable getGameTable() {
+        return gameModel.getGameTable();
     }
 
-    public synchronized static void setGameTable(GameTable gameTable, int row, int column, GameField value) {
+    public synchronized void setGameTable(GameTable gameTable, int row, int column, GameField value) {
         gameTable.setValueAt(row, column, value);
     }
 
-    public synchronized static GameField getGameField(GameTable gameTable, int row, int column) {
+    public synchronized GameField getGameField(GameTable gameTable, int row, int column) {
         return gameTable.getValueAt(row, column);
     }
 
-    public synchronized static boolean getPacmanFrame() {
-        return GameModel.getPacmanFrame();
+    public synchronized boolean getPacmanFrame() {
+        return gameModel.getPacmanFrame();
     }
 
-    public synchronized static void setPacmanFrame(boolean pacmanFrame) {
+    public synchronized void setPacmanFrame(boolean pacmanFrame) {
         GameModel.setPacmanFrame(pacmanFrame);
     }
 }

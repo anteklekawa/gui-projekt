@@ -11,9 +11,13 @@ public class PacmanAnim implements Runnable {
     private boolean pacmanFrame = true;
     private boolean isRunning = true;
     private static GameTable gameTable;
+    private GameController gameController;
+    private GameModel gameModel;
 
-    public PacmanAnim() {
-        gameTable = GameModel.getGameTable();
+    public PacmanAnim(GameController gameController, GameModel gameModel) {
+        this.gameModel = gameModel;
+        gameTable = gameModel.getGameTable();
+        this.gameController = gameController;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class PacmanAnim implements Runnable {
 
     public void nextFrame() {
         pacmanFrame = !pacmanFrame;
-        GameController.setPacmanFrame(pacmanFrame);
+        gameController.setPacmanFrame(pacmanFrame);
     }
 
     public void stop() {

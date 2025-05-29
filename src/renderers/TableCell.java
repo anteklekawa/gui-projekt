@@ -12,8 +12,12 @@ public class TableCell extends JLabel implements TableCellRenderer {
     private GameField gameField;
     private static Image pacmanOpenImg;
     private static Image pacmanClosedImg;
+    private GameController gameController;
 
-    public TableCell() {
+    public TableCell(GameController gameController) {
+
+        this.gameController = gameController;
+
         setOpaque(true);
 
         ImageIcon pacmanOpenImgIcon = new ImageIcon(getClass().getResource("/assets/pacmanOpen.png"));
@@ -47,7 +51,7 @@ public class TableCell extends JLabel implements TableCellRenderer {
 
                 case PLAYER: {
                     setBackground(Color.WHITE);
-                    if (GameController.getPacmanFrame())
+                    if (gameController.getPacmanFrame())
                         setIcon(new ImageIcon(pacmanOpenImg));
                     else
                         setIcon(new ImageIcon(pacmanClosedImg));
