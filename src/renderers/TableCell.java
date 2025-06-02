@@ -212,11 +212,11 @@ public class TableCell extends JLabel implements TableCellRenderer {
                 }
 
                 case ENEMY: {
-                    Map<GhostName, int[]> enemyPos = gameController.getEnemysLocation();
+                    Map<GhostName, Point> enemyPos = gameController.getEnemysLocation();
 
                     if (enemyPos != null) {
-                        for (Map.Entry<GhostName, int[]> enemy : enemyPos.entrySet()) {
-                            if (enemy.getValue()[0] == row && enemy.getValue()[1] == column) {
+                        for (Map.Entry<GhostName, Point> enemy : enemyPos.entrySet()) {
+                            if (enemy.getValue().x == row && enemy.getValue().y == column) {
                                 if (gameController.getKillPowerUp()) {
                                     setIcon(new ImageIcon(blueImg));
                                 } else {

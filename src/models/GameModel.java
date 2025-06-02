@@ -19,14 +19,18 @@ public class GameModel {
     static Direction direction = Direction.RIGHT;
     private GameController gameController;
 
-    private Map<GhostName, int[]> enemyPos = new HashMap<GhostName, int[]>();
+    private Map<GhostName, Point> enemyPos = new HashMap<GhostName, Point>();
     private Map<GhostName, Direction> enemyDirections = new HashMap<GhostName, Direction>();
-    private Map<GhostName, int[]> lastEnemyPos = new HashMap<GhostName, int[]>();
+    private Map<GhostName, Point> lastEnemyPos = new HashMap<GhostName, Point>();
     private Map<GhostName, GameField> steppedInto = new HashMap<GhostName, GameField>();
-    private Map<GhostName, Boolean> isGhostKilled = new HashMap<GhostName, Boolean>();
+    private Map<GhostName, Boolean> isEnemyKilled = new HashMap<GhostName, Boolean>();
     private Map<Point, PowerUp> powerUpPos = new HashMap<>();
 
     private boolean killPowerUp = false;
+    private boolean stopPowerUp = false;
+    private boolean slowPowerUp = false;
+    private boolean speedPowerUp = false;
+    private boolean chancePowerUp = false;
 
     private boolean gameEnded = false;
 
@@ -69,8 +73,33 @@ public class GameModel {
         this.killPowerUp = killPowerUp;
     }
 
+    public synchronized void setStopPowerUp(boolean stopPowerUp) {
+        this.stopPowerUp = stopPowerUp;
+    }
+
+    public synchronized void setSlowPowerUp(boolean slowPowerUp) {
+        this.slowPowerUp = slowPowerUp;
+    }
+
+    public synchronized void setSpeedPowerUp(boolean speedPowerUp) {
+        this.speedPowerUp = speedPowerUp;
+    }
+
+    public synchronized void setChancePowerUp(boolean chancePowerUp) {
+        this.chancePowerUp = chancePowerUp;
+    }
+
+
     public boolean getKillPowerUp() {
         return killPowerUp;
+    }
+
+    public boolean getSlowPowerUp() {
+        return slowPowerUp;
+    }
+
+    public boolean getSpeedPowerUp() {
+        return speedPowerUp;
     }
 
     public boolean getPowerUpFrame() {
@@ -116,14 +145,14 @@ public class GameModel {
             synchronized (this) {
                 List<GhostName> toRemove = new ArrayList<>();
 
-                for (Map.Entry<GhostName, int[]> enemy : enemyPos.entrySet()) {
-                    if (enemy.getValue()[0] == newPosRow && enemy.getValue()[1] == newPosColumn) {
+                for (Map.Entry<GhostName, Point> enemy : enemyPos.entrySet()) {
+                    if (enemy.getValue().x == newPosRow && enemy.getValue().y == newPosColumn) {
                         toRemove.add(enemy.getKey());
                     }
                 }
 
                 for (GhostName ghostName : toRemove) {
-                    deleteGhost(newPosRow, newPosColumn, ghostName);
+                    deleteEnemy(newPosRow, newPosColumn, ghostName);
                 }
             }
         }
@@ -138,6 +167,26 @@ public class GameModel {
                             gameController.powerUpKill();
                             break;
                         }
+
+                        case STOP: {
+                            gameController.powerUpStop();
+                            break;
+                        }
+
+                        case SLOW: {
+                            gameController.powerUpSlow();
+                            break;
+                        }
+
+                        case SPEED: {
+                            gameController.powerUpSpeed();
+                            break;
+                        }
+
+                        case CHANCE: {
+                            gameController.powerUpChance();
+                            break;
+                        }
                     }
                 }
             }
@@ -149,33 +198,35 @@ public class GameModel {
     }
 
     public synchronized void moveGhosts(GhostName ghostName) {
-            int oldPosRow = enemyPos.get(ghostName)[0];
-            int oldPosColumn = enemyPos.get(ghostName)[1];
+            int oldPosRow = getEnemyPos(ghostName).x;
+            int oldPosColumn = getEnemyPos(ghostName).y;
 
             int newPosRow = oldPosRow;
             int newPosColumn = oldPosColumn;
 
             Direction ghostDirection = enemyDirections.get(ghostName);
 
-            switch (ghostDirection) {
-                case LEFT: {
-                    newPosColumn--;
-                    break;
-                }
+            if (!stopPowerUp) {
+                switch (ghostDirection) {
+                    case LEFT: {
+                        newPosColumn--;
+                        break;
+                    }
 
-                case RIGHT: {
-                    newPosColumn++;
-                    break;
-                }
+                    case RIGHT: {
+                        newPosColumn++;
+                        break;
+                    }
 
-                case UP: {
-                    newPosRow--;
-                    break;
-                }
+                    case UP: {
+                        newPosRow--;
+                        break;
+                    }
 
-                case DOWN: {
-                    newPosRow++;
-                    break;
+                    case DOWN: {
+                        newPosRow++;
+                        break;
+                    }
                 }
             }
 
@@ -185,14 +236,9 @@ public class GameModel {
             }
 
             if (gameTable.getValueAt(newPosRow, newPosColumn) == GameField.PLAYER && killPowerUp) {
-                Iterator<Map.Entry<GhostName, int[]>> iterator = enemyPos.entrySet().iterator();
 
-                while (iterator.hasNext()) {
-                    Map.Entry<GhostName, int[]> enemy = iterator.next();
-
-                    if (enemy.getValue()[0] == newPosRow && enemy.getValue()[1] == newPosColumn) {
-                        deleteGhost(newPosRow, newPosColumn, enemy.getKey());
-                    }
+                if (getEnemyPos(ghostName).x == newPosRow && getEnemyPos(ghostName).y == newPosColumn) {
+                    deleteEnemy(newPosRow, newPosColumn, ghostName);
                 }
             }
 
@@ -209,22 +255,22 @@ public class GameModel {
                             }
 
                             case 1: {
-                                powerUpPos.put(new Point(oldPosRow, oldPosColumn), PowerUp.KILL);
+                                powerUpPos.put(new Point(oldPosRow, oldPosColumn), PowerUp.STOP);
                                 break;
                             }
 
                             case 2: {
-                                powerUpPos.put(new Point(oldPosRow, oldPosColumn), PowerUp.KILL);
+                                powerUpPos.put(new Point(oldPosRow, oldPosColumn), PowerUp.SLOW);
                                 break;
                             }
 
                             case 3: {
-                                powerUpPos.put(new Point(oldPosRow, oldPosColumn), PowerUp.KILL);
+                                powerUpPos.put(new Point(oldPosRow, oldPosColumn), PowerUp.SPEED);
                                 break;
                             }
 
                             case 4: {
-                                powerUpPos.put(new Point(oldPosRow, oldPosColumn), PowerUp.KILL);
+                                powerUpPos.put(new Point(oldPosRow, oldPosColumn), PowerUp.CHANCE);
                                 break;
                             }
                         }
@@ -236,8 +282,8 @@ public class GameModel {
 
                     gameTable.setValueAt(newPosRow, newPosColumn, GameField.ENEMY);
 
-                    lastEnemyPos.put(ghostName, new int[]{oldPosRow, oldPosColumn});
-                    enemyPos.put(ghostName, new int[]{newPosRow, newPosColumn});
+                    lastEnemyPos.put(ghostName, new Point(oldPosRow, oldPosColumn));
+                    enemyPos.put(ghostName, new Point(newPosRow, newPosColumn));
 
                     gameTable.fireTableDataChanged();
 
@@ -267,29 +313,38 @@ public class GameModel {
             }
     }
 
-    private synchronized void deleteGhost(int newPosRow, int newPosColumn, GhostName ghostName) {
-        Iterator<Map.Entry<GhostName, int[]>> iterator = enemyPos.entrySet().iterator();
+    public synchronized void deleteEnemy(int newPosRow, int newPosColumn, GhostName ghostName) {
 
-        while (iterator.hasNext()) {
+        if (getEnemyPos(ghostName).x == newPosRow && getEnemyPos(ghostName).y == newPosColumn) {
+            gameTable.setValueAt(getEnemyPos(ghostName).x, getEnemyPos(ghostName).y, GameField.DOT);
+            gameController.deleteEnemy(ghostName);
+            enemyPos.remove(ghostName);
+            enemyDirections.remove(ghostName);
+            lastEnemyPos.remove(ghostName);
+            steppedInto.remove(ghostName);
+            isEnemyKilled.put(ghostName, true);
+        }
+    }
 
-            Map.Entry<GhostName, int[]> ghost = iterator.next();
-
-            if (ghost.getValue()[0] == newPosRow && ghost.getValue()[1] == newPosColumn) {
-                gameController.deleteGhost(ghostName);
-                enemyDirections.remove(ghostName);
-                lastEnemyPos.remove(ghostName);
-                steppedInto.remove(ghostName);
-                gameTable.setValueAt(ghost.getValue()[0], ghost.getValue()[1], GameField.DOT);
-                isGhostKilled.put(ghost.getKey(), true);
-                iterator.remove();
+    public synchronized Point getEnemyPos(GhostName ghostName) {
+        for (Map.Entry<GhostName, Point> enemy : enemyPos.entrySet()) {
+            if (enemy.getKey() == ghostName) {
+                return enemy.getValue();
             }
         }
+        return null;
     }
 
 
     public synchronized void dropPowerUp(GhostName ghostName) {
-        if (Math.random() > 0.75) {
-            steppedInto.put(ghostName, GameField.POWERUP);
+        if (chancePowerUp) {
+            if (Math.random() > 0.5) {
+                steppedInto.put(ghostName, GameField.POWERUP);
+            }
+        } else {
+            if (Math.random() > 0.75) {
+                steppedInto.put(ghostName, GameField.POWERUP);
+            }
         }
     }
 
@@ -301,7 +356,7 @@ public class GameModel {
         return direction;
     }
 
-    public static int[] getPacmanLocation() {
+    public synchronized static int[] getPacmanLocation() {
         for (int i = 0; i < gameTable.getRowCount(); i++) {
             for (int j = 0; j < gameTable.getColumnCount(); j++) {
                 if (gameTable.getValueAt(i, j) == GameField.PLAYER) {
@@ -319,29 +374,29 @@ public class GameModel {
                 if (gameTable.getValueAt(i, j) == GameField.ENEMY) {
                     switch (enemyCounter) {
                         case 0: {
-                            enemyPos.put(GhostName.BLINKY, new int[]{i, j});
-                            lastEnemyPos.put(GhostName.BLINKY, new int[]{i, j});
+                            enemyPos.put(GhostName.BLINKY, new Point(i, j));
+                            lastEnemyPos.put(GhostName.BLINKY, new Point(i, j));
                             enemyCounter++;
                             break;
                         }
 
                         case 1: {
-                            enemyPos.put(GhostName.CLYDE, new int[]{i, j});
-                            lastEnemyPos.put(GhostName.CLYDE, new int[]{i, j});
+                            enemyPos.put(GhostName.CLYDE, new Point(i, j));
+                            lastEnemyPos.put(GhostName.CLYDE, new Point(i, j));
                             enemyCounter++;
                             break;
                         }
 
                         case 2: {
-                            enemyPos.put(GhostName.INKY, new int[]{i, j});
-                            lastEnemyPos.put(GhostName.INKY, new int[]{i, j});
+                            enemyPos.put(GhostName.INKY, new Point(i, j));
+                            lastEnemyPos.put(GhostName.INKY, new Point(i, j));
                             enemyCounter++;
                             break;
                         }
 
                         case 3: {
-                            enemyPos.put(GhostName.PINKY, new int[]{i, j});
-                            lastEnemyPos.put(GhostName.PINKY, new int[]{i, j});
+                            enemyPos.put(GhostName.PINKY, new Point(i, j));
+                            lastEnemyPos.put(GhostName.PINKY, new Point(i, j));
                             enemyCounter++;
                             break;
                         }
@@ -351,7 +406,7 @@ public class GameModel {
         }
     }
 
-    public Map<GhostName, int[]> getEnemysLocation() {
+    public Map<GhostName, Point> getEnemysLocation() {
         return enemyPos;
     }
 }

@@ -26,7 +26,10 @@ public class GhostsMove implements Runnable {
             });
 
             try {
-                Thread.sleep(150);
+                if (gameController.getSlowPowerUp())
+                    Thread.sleep(300);
+                else
+                    Thread.sleep(150);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }

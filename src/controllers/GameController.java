@@ -9,6 +9,7 @@ import views.GameView;
 import components.GameTable;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Map;
@@ -118,12 +119,56 @@ public class GameController {
         new Thread(killThread).start();
     }
 
+    public void powerUpStop() {
+        StopThread stopThread = new StopThread(this);
+        new Thread(stopThread).start();
+    }
+
+    public void powerUpSlow() {
+        SlowThread slowThread = new SlowThread(this);
+        new Thread(slowThread).start();
+    }
+
+    public void powerUpSpeed() {
+        SpeedThread speedThread = new SpeedThread(this);
+        new Thread(speedThread).start();
+    }
+
+    public void powerUpChance() {
+        ChanceThread chanceThread = new ChanceThread(this);
+        new Thread(chanceThread).start();
+    }
+
     public synchronized void setKillPowerUp(boolean killPowerUp) {
         gameModel.setKillPowerUp(killPowerUp);
     }
 
+    public synchronized void setStopPowerUp(boolean stopPowerUp) {
+        gameModel.setStopPowerUp(stopPowerUp);
+    }
+
+    public synchronized void setSlowPowerUp(boolean slowPowerUp) {
+        gameModel.setSlowPowerUp(slowPowerUp);
+    }
+
+    public synchronized void setSpeedPowerUp(boolean speedPowerUp) {
+        gameModel.setSpeedPowerUp(speedPowerUp);
+    }
+
+    public synchronized void setChancePowerUp(boolean chancePowerUp) {
+        gameModel.setChancePowerUp(chancePowerUp);
+    }
+
     public boolean getKillPowerUp() {
         return gameModel.getKillPowerUp();
+    }
+
+    public boolean getSlowPowerUp() {
+        return gameModel.getSlowPowerUp();
+    }
+
+    public boolean getSpeedPowerUp() {
+        return gameModel.getSpeedPowerUp();
     }
 
     public void setDirection(KeyEvent e) {
@@ -175,7 +220,7 @@ public class GameController {
         return gameTable.getValueAt(row, column);
     }
 
-    public synchronized void deleteGhost(GhostName ghostName) {
+    public synchronized void deleteEnemy(GhostName ghostName) {
         switch (ghostName) {
             case BLINKY: {
                 blinkyMove.stop();
@@ -223,7 +268,7 @@ public class GameController {
         gameModel.setEnemysLocation();
     }
 
-    public Map<GhostName, int[]> getEnemysLocation() {
+    public Map<GhostName, Point> getEnemysLocation() {
         return gameModel.getEnemysLocation();
     }
 

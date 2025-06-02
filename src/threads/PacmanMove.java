@@ -23,7 +23,10 @@ public class PacmanMove implements Runnable {
             });
 
             try {
-                Thread.sleep(150);
+                if (gameController.getSpeedPowerUp()) {
+                    Thread.sleep(100);
+                } else
+                    Thread.sleep(150);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }

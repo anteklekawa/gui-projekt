@@ -63,7 +63,6 @@ public class AppController {
         @Override
         public void actionPerformed(ActionEvent e) {
             appModel.setMapSize(chooseSizeView.getMapSize(), AppController.this);
-//            GameModel.setMapSize(chooseSizeView.getMapSize(), AppController.this);
         }
     }
 
