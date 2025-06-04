@@ -45,8 +45,4 @@ public class GameView extends JFrame {
         setLocationRelativeTo(null);
         setVisible(true);
     }
-
-    public void repaintGame() {
-        gameTable.repaint();
-    }
 }

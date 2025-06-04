@@ -4,7 +4,6 @@ import controllers.GameController;
 import enums.GhostName;
 
 import javax.swing.*;
-import java.util.Map;
 
 public class GhostsMove implements Runnable {
     private GameController gameController;

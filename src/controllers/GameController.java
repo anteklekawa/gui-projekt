@@ -197,7 +197,6 @@ public class GameController {
                 break;
             }
         }
-        gameView.repaint();
     }
 
     public Direction getDirection() {

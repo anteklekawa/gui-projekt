@@ -6,7 +6,6 @@ import enums.Direction;
 import enums.GameField;
 import enums.GhostName;
 import enums.PowerUp;
-import threads.PacmanAnim;
 
 import java.awt.*;
 import java.util.*;
@@ -25,6 +24,8 @@ public class GameModel {
     private Map<GhostName, Boolean> isEnemyKilled = new HashMap<GhostName, Boolean>();
     private Map<Point, PowerUp> powerUpPos = new HashMap<>();
 
+    private Point pacmanPos;
+
     private boolean killPowerUp = false;
     private boolean stopPowerUp = false;
     private boolean slowPowerUp = false;
@@ -40,6 +41,8 @@ public class GameModel {
     public GameModel(GameController gameController, GameTable gameTable) {
         this.gameController = gameController;
         this.gameTable = gameTable;
+
+        pacmanPos = getPacmanLocation();
 
         calculateCellSize();
 
@@ -129,8 +132,8 @@ public class GameModel {
     }
 
     public synchronized void movePacman() {
-        int oldPosRow = getPacmanLocation()[0];
-        int oldPosColumn = getPacmanLocation()[1];
+        int oldPosRow = pacmanPos.x;
+        int oldPosColumn = pacmanPos.y;
 
         int newPosRow = oldPosRow;
         int newPosColumn = oldPosColumn;
@@ -213,6 +216,8 @@ public class GameModel {
                 }
             }
 
+            pacmanPos.x = newPosRow;
+            pacmanPos.y = newPosColumn;
             gameTable.setValueAt(newPosRow, newPosColumn, GameField.PLAYER);
         }
     }
@@ -374,11 +379,11 @@ public class GameModel {
         return direction;
     }
 
-    public synchronized static int[] getPacmanLocation() {
+    public synchronized static Point getPacmanLocation() {
         for (int i = 0; i < gameTable.getRowCount(); i++) {
             for (int j = 0; j < gameTable.getColumnCount(); j++) {
                 if (gameTable.getValueAt(i, j) == GameField.PLAYER) {
-                    return new int[]{i, j};
+                    return new Point(i, j);
                 }
             }
         }

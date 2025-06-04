@@ -24,8 +24,6 @@ public class PowerupAnim implements Runnable {
                 while (isRunning) {
                     nextFrame();
 
-                    SwingUtilities.invokeLater(() -> gameTable.fireTableDataChanged());
-
                     Thread.sleep(150);
                 }
             } catch (InterruptedException e) {
