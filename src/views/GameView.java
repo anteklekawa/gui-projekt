@@ -60,9 +60,13 @@ public class GameView extends JFrame {
 
         bottomPanel.add(Box.createRigidArea(new Dimension(10, 0)));
         bottomPanel.add(lifeCounter);
+
         bottomPanel.add(Box.createHorizontalGlue());
+
         bottomPanel.add(gamePoints);
+
         bottomPanel.add(Box.createHorizontalGlue());
+
         bottomPanel.add(timerText);
         bottomPanel.add(Box.createRigidArea(new Dimension(10, 0)));
 
