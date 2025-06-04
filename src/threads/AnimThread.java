@@ -2,19 +2,16 @@ package threads;
 
 import components.GameTable;
 import controllers.GameController;
-import models.GameModel;
-import views.GameView;
 
-import javax.swing.*;
-
-public class PacmanAnim implements Runnable {
+public class AnimThread implements Runnable {
     private int pacmanFrame = 0;
     private int frameDirection = 1;
     private boolean isRunning = true;
     private static GameTable gameTable;
     private GameController gameController;
+    private boolean powerUpFrame = true;
 
-    public PacmanAnim(GameController gameController) {
+    public AnimThread(GameController gameController) {
         gameTable = gameController.getGameTable();
         this.gameController = gameController;
     }
@@ -42,6 +39,10 @@ public class PacmanAnim implements Runnable {
             frameDirection = 1;
 
         gameController.setPacmanFrame(pacmanFrame);
+
+        powerUpFrame = !powerUpFrame;
+
+        gameController.setPowerUpFrame(powerUpFrame);
     }
 
     public void stop() {

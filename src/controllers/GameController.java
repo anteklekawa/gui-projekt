@@ -19,20 +19,14 @@ public class GameController {
     private GameView gameView;
     private GameModel gameModel;
 
-    private PacmanAnim pacmanAnim;
+    private TimerThread timerThread;
+
+    private AnimThread animThread;
     private PacmanMove pacmanMove;
 
-    private GhostsMove blinkyMove;
-    private GhostsMove clydeMove;
-    private GhostsMove inkyMove;
-    private GhostsMove pinkyMove;
+    private GhostsMove ghostsMove;
 
-    private DropPowerup dropPowerupBlinky;
-    private DropPowerup dropPowerupClyde;
-    private DropPowerup dropPowerupInky;
-    private DropPowerup dropPowerupPinky;
-
-    private PowerupAnim powerupAnim;
+    private DropPowerup dropPowerUps;
 
     public GameController(AppController appController, GameTable gameTable) {
         gameModel = new GameModel(this, gameTable);
@@ -45,56 +39,47 @@ public class GameController {
             gameView.setVisible(true);
         });
 
-        powerupAnim = new PowerupAnim(this);
+        timerThread = new TimerThread(this);
 
-        pacmanAnim = new PacmanAnim(this);
+        animThread = new AnimThread(this);
         pacmanMove = new PacmanMove(this);
 
-        blinkyMove = new GhostsMove(this, GhostName.BLINKY);
-        clydeMove = new GhostsMove(this, GhostName.CLYDE);
-        inkyMove = new GhostsMove(this, GhostName.INKY);
-        pinkyMove = new GhostsMove(this, GhostName.PINKY);
+        ghostsMove = new GhostsMove(this, new GhostName[]{GhostName.BLINKY, GhostName.CLYDE, GhostName.INKY, GhostName.PINKY});
 
-        dropPowerupBlinky = new DropPowerup(this, GhostName.BLINKY);
-        dropPowerupClyde = new DropPowerup(this, GhostName.CLYDE);
-        dropPowerupInky = new DropPowerup(this, GhostName.INKY);
-        dropPowerupPinky = new DropPowerup(this, GhostName.PINKY);
+        dropPowerUps = new DropPowerup(this, new GhostName[]{GhostName.BLINKY, GhostName.CLYDE, GhostName.INKY, GhostName.PINKY});
 
-        new Thread(blinkyMove).start();
-        new Thread(clydeMove).start();
-        new Thread(inkyMove).start();
-        new Thread(pinkyMove).start();
 
-        new Thread(pacmanAnim).start();
+        new Thread(ghostsMove).start();
+
+        new Thread(animThread).start();
         new Thread(pacmanMove).start();
 
-        new Thread(powerupAnim).start();
 
-        new Thread(dropPowerupBlinky).start();
-        new Thread(dropPowerupClyde).start();
-        new Thread(dropPowerupInky).start();
-        new Thread(dropPowerupPinky).start();
+        new Thread(dropPowerUps).start();
+    }
+
+    public void startTimer() {
+        new Thread(timerThread).start();
     }
 
     public void endGame() {
-        pacmanAnim.stop();
+        animThread.stop();
         pacmanMove.stop();
 
-        powerupAnim.stop();
+        timerThread.stop();
 
-        blinkyMove.stop();
-        clydeMove.stop();
-        inkyMove.stop();
-        pinkyMove.stop();
+        ghostsMove.stop();
 
-        dropPowerupBlinky.stop();
-        dropPowerupClyde.stop();
-        dropPowerupInky.stop();
-        dropPowerupPinky.stop();
+        dropPowerUps.stop();
 
         JOptionPane.showMessageDialog(null, "You lost!");
 
         gameView.dispose();
+    }
+
+    public void updateTimer() {
+        gameView.updateTimer(gameModel.getTimer());
+        gameView.updateGamePoints(gameModel.getGamePoints());
     }
 
     public GameView getGameView() {
@@ -112,6 +97,10 @@ public class GameController {
                 setDirection(e);
             }
         });
+    }
+
+    public void addSec() {
+        gameModel.addSec();
     }
 
     public void powerUpKill() {
@@ -224,38 +213,15 @@ public class GameController {
     }
 
     public synchronized void deleteEnemy(GhostName ghostName) {
-        switch (ghostName) {
-            case BLINKY: {
-                blinkyMove.stop();
-                dropPowerupBlinky.stop();
-                break;
-            }
-
-            case CLYDE: {
-                clydeMove.stop();
-                dropPowerupClyde.stop();
-                break;
-            }
-
-            case INKY: {
-                inkyMove.stop();
-                dropPowerupInky.stop();
-                break;
-            }
-
-            case PINKY: {
-                pinkyMove.stop();
-                dropPowerupPinky.stop();
-                break;
-            }
-        }
+        ghostsMove.deleteGhost(ghostName);
+        dropPowerUps.deleteGhost(ghostName);
     }
 
     public synchronized void setPowerUpFrame(boolean powerUpFrame) {
         gameModel.setPowerUpFrame(powerUpFrame);
     }
 
-    public boolean getPowerUpFrame() {
+    public synchronized boolean getPowerUpFrame() {
         return gameModel.getPowerUpFrame();
     }
 

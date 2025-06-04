@@ -1,6 +1,7 @@
 package renderers;
 
 import controllers.GameController;
+import enums.Direction;
 import enums.GameField;
 import enums.GhostName;
 
@@ -11,6 +12,9 @@ import java.util.Map;
 
 public class TableCell extends JLabel implements TableCellRenderer {
     private GameField gameField;
+
+    private int row;
+    private int column;
 
     private ImageIcon pacmanOpenImgRight;
     private ImageIcon pacmanMidImgRight;
@@ -116,6 +120,11 @@ public class TableCell extends JLabel implements TableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+        this.row = row;
+        this.column = column;
+
+        cellSize = gameController.getCellSize();
+
         setIcon(null);
         setText("");
 
@@ -135,9 +144,10 @@ public class TableCell extends JLabel implements TableCellRenderer {
 
                 case PLAYER: {
                     setBackground(Color.BLACK);
+                    Direction direction = gameController.getDirection();
                     switch (gameController.getPacmanFrame()) {
                         case 0: {
-                            switch (gameController.getDirection()) {
+                            switch (direction) {
                                 case RIGHT: {
                                     setIcon(pacmanOpenImgRight);
                                     break;
@@ -162,7 +172,7 @@ public class TableCell extends JLabel implements TableCellRenderer {
                         }
 
                         case 1: {
-                            switch (gameController.getDirection()) {
+                            switch (direction) {
                                 case RIGHT: {
                                     setIcon(pacmanMidImgRight);
                                     break;
@@ -187,7 +197,7 @@ public class TableCell extends JLabel implements TableCellRenderer {
                         }
 
                         case 2: {
-                            switch (gameController.getDirection()) {
+                            switch (direction) {
                                 case RIGHT: {
                                     setIcon(pacmanClosedImgRight);
                                     break;
@@ -275,6 +285,7 @@ public class TableCell extends JLabel implements TableCellRenderer {
                 int powerUpWidth = (cellSize / 2) + 2;
                 int powerUpHeight = (cellSize / 2) + 2;
                 g.fillOval(getWidth() / 2 - (powerUpWidth/2), getHeight() / 2 - (powerUpHeight/2), powerUpWidth, powerUpHeight);
+                gameController.getGameTable().fireTableCellUpdated(row, column);
             }
         }
     }

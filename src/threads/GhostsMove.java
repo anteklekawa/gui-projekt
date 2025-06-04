@@ -8,10 +8,10 @@ import javax.swing.*;
 public class GhostsMove implements Runnable {
     private GameController gameController;
     private boolean areGhostsMoving;
-    private GhostName ghostName;
+    private GhostName[] ghostNames;
 
-    public GhostsMove(GameController gameController, GhostName ghostName) {
-        this.ghostName = ghostName;
+    public GhostsMove(GameController gameController, GhostName[] ghostNames) {
+        this.ghostNames = ghostNames;
         this.gameController = gameController;
         areGhostsMoving = true;
     }
@@ -22,7 +22,10 @@ public class GhostsMove implements Runnable {
         while (areGhostsMoving) {
 
             SwingUtilities.invokeLater(() -> {
-                gameController.ghostsMove(ghostName);
+                for (GhostName ghostName : ghostNames) {
+                    if (ghostName != null)
+                        gameController.ghostsMove(ghostName);
+                }
             });
 
             try {
@@ -38,5 +41,13 @@ public class GhostsMove implements Runnable {
 
     public void stop() {
         areGhostsMoving = false;
+    }
+
+    public void deleteGhost(GhostName ghostName) {
+        for (int i = 0; i < ghostNames.length; i++) {
+            if (ghostNames[i] == ghostName) {
+                ghostNames[i] = null;
+            }
+        }
     }
 }

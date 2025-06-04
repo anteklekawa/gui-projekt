@@ -17,6 +17,12 @@ public class GameModel {
     static Direction direction = Direction.RIGHT;
     private GameController gameController;
 
+    private int gamePoints = 0;
+
+    private int tenths = 0;
+    private int seconds = 0;
+    private int minutes = 0;
+
     private Map<GhostName, Point> enemyPos = new HashMap<GhostName, Point>();
     private Map<GhostName, Direction> enemyDirections = new HashMap<GhostName, Direction>();
     private Map<GhostName, Point> lastEnemyPos = new HashMap<GhostName, Point>();
@@ -72,6 +78,26 @@ public class GameModel {
         } else {
             cellSize = (int) Math.round(height * 0.008);
         }
+    }
+
+    public void addSec() {
+        tenths += 1;
+        if (tenths >= 100) {
+            tenths = 0;
+            seconds++;
+            if (seconds >= 60) {
+                seconds = 0;
+                minutes++;
+            }
+        }
+    }
+
+    public String getTimer() {
+        return String.format("%02d:%02d:%02d", minutes, seconds, tenths);
+    }
+
+    public int getGamePoints() {
+        return gamePoints;
     }
 
     public int getPacmanFrame() {
@@ -132,6 +158,11 @@ public class GameModel {
     }
 
     public synchronized void movePacman() {
+
+        if (tenths == 0 && seconds == 0 && minutes == 0) {
+            gameController.startTimer();
+        }
+
         int oldPosRow = pacmanPos.x;
         int oldPosColumn = pacmanPos.y;
 
@@ -160,12 +191,12 @@ public class GameModel {
             }
         }
 
-        if (gameTable.getValueAt(newPosRow, newPosColumn) == GameField.ENEMY && !gameEnded && !killPowerUp) {
+        if (enemyPos.containsValue(new Point(newPosRow, newPosColumn)) && !gameEnded && !killPowerUp) {
             gameEnded = true;
             gameController.endGame();
         }
 
-        if (gameTable.getValueAt(newPosRow, newPosColumn) == GameField.ENEMY && killPowerUp) {
+        if (enemyPos.containsValue(new Point(newPosRow, newPosColumn)) && killPowerUp) {
 
             synchronized (this) {
                 List<GhostName> toRemove = new ArrayList<>();
@@ -180,11 +211,13 @@ public class GameModel {
                     deleteEnemy(newPosRow, newPosColumn, ghostName);
                 }
             }
+
+            gamePoints += 500;
         }
 
         if (gameTable.getValueAt(newPosRow, newPosColumn) != GameField.WALL) {
             gameTable.setValueAt(oldPosRow, oldPosColumn, GameField.EMPTY);
-            if (gameTable.getValueAt(newPosRow, newPosColumn) == GameField.POWERUP) {
+            if (powerUpPos.containsKey(new Point(newPosRow, newPosColumn))) {
                 PowerUp powerUp = powerUpPos.get(new Point(newPosRow, newPosColumn));
                 if (powerUp != null) {
                     switch (powerUp) {
@@ -213,8 +246,12 @@ public class GameModel {
                             break;
                         }
                     }
+                    gamePoints += 150;
                 }
             }
+
+            if (gameTable.getValueAt(newPosRow, newPosColumn) == GameField.DOT)
+                gamePoints += 10;
 
             pacmanPos.x = newPosRow;
             pacmanPos.y = newPosColumn;
@@ -255,19 +292,19 @@ public class GameModel {
                 }
             }
 
-            if (gameTable.getValueAt(newPosRow, newPosColumn) == GameField.PLAYER && !gameEnded && !killPowerUp) {
+            if ((pacmanPos.x == newPosRow && pacmanPos.y == newPosColumn) && !gameEnded && !killPowerUp) {
                 gameEnded = true;
                 gameController.endGame();
             }
 
-            if (gameTable.getValueAt(newPosRow, newPosColumn) == GameField.PLAYER && killPowerUp) {
+            if ((pacmanPos.x == newPosRow && pacmanPos.y == newPosColumn) && killPowerUp) {
 
                 if (getEnemyPos(ghostName).x == newPosRow && getEnemyPos(ghostName).y == newPosColumn) {
                     deleteEnemy(newPosRow, newPosColumn, ghostName);
                 }
             }
 
-            else if (gameTable.getValueAt(newPosRow, newPosColumn) != GameField.WALL && gameTable.getValueAt(newPosRow, newPosColumn) != GameField.ENEMY) {
+            else if (gameTable.getValueAt(newPosRow, newPosColumn) != GameField.WALL && !enemyPos.containsValue(new Point(newPosRow, newPosColumn))) {
 
                     GameField oldField = steppedInto.get(ghostName);
 
