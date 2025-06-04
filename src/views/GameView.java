@@ -20,13 +20,13 @@ public class GameView extends JFrame {
         this.gameController = gameController;
         GameView.gameTable = new JTable(gameController.getGameTable());
         gameTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        gameTable.setRowHeight(24);
+        gameTable.setRowHeight(gameController.getCellSize());
 
         for (int i = 0; i < gameTable.getColumnCount(); i++) {
             TableColumn column = gameTable.getColumnModel().getColumn(i);
-            column.setPreferredWidth(24);
-            column.setMaxWidth(24);
-            column.setMinWidth(24);
+            column.setPreferredWidth(gameController.getCellSize());
+            column.setMaxWidth(gameController.getCellSize());
+            column.setMinWidth(gameController.getCellSize());
         }
 
         gameTable.setDefaultRenderer(GameField.class, new TableCell(gameController));

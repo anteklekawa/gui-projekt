@@ -14,7 +14,6 @@ import java.util.List;
 
 public class GameModel {
     static GameTable gameTable;
-    static PacmanAnim pacman;
     static int pacmanFrame;
     static Direction direction = Direction.RIGHT;
     private GameController gameController;
@@ -36,9 +35,13 @@ public class GameModel {
 
     private boolean powerUpFrame = true;
 
+    private int cellSize;
+
     public GameModel(GameController gameController, GameTable gameTable) {
         this.gameController = gameController;
         this.gameTable = gameTable;
+
+        calculateCellSize();
 
         steppedInto.put(GhostName.BLINKY, GameField.DOT);
         steppedInto.put(GhostName.CLYDE, GameField.DOT);
@@ -51,6 +54,21 @@ public class GameModel {
         enemyDirections.put(GhostName.PINKY, Direction.DOWN);
 
         setEnemysLocation();
+    }
+
+    public void calculateCellSize() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int height = screenSize.height;
+
+        if (gameTable.getRowCount() <= 50) {
+            cellSize = (int) Math.round(height * 0.015);
+        } else if (gameTable.getRowCount() <= 80) {
+            cellSize = (int) Math.round(height * 0.012);
+        } else if (gameTable.getRowCount() <= 92) {
+            cellSize = (int) Math.round(height * 0.01);
+        } else {
+            cellSize = (int) Math.round(height * 0.008);
+        }
     }
 
     public int getPacmanFrame() {
@@ -87,6 +105,10 @@ public class GameModel {
 
     public synchronized void setChancePowerUp(boolean chancePowerUp) {
         this.chancePowerUp = chancePowerUp;
+    }
+
+    public int getCellSize() {
+        return cellSize;
     }
 
 
@@ -192,8 +214,6 @@ public class GameModel {
             }
 
             gameTable.setValueAt(newPosRow, newPosColumn, GameField.PLAYER);
-
-            gameTable.fireTableDataChanged();
         }
     }
 
@@ -284,8 +304,6 @@ public class GameModel {
 
                     lastEnemyPos.put(ghostName, new Point(oldPosRow, oldPosColumn));
                     enemyPos.put(ghostName, new Point(newPosRow, newPosColumn));
-
-                    gameTable.fireTableDataChanged();
 
             } else {
                 Random r = new Random();

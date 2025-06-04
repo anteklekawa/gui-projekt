@@ -171,6 +171,10 @@ public class GameController {
         return gameModel.getSpeedPowerUp();
     }
 
+    public int getCellSize() {
+        return gameModel.getCellSize();
+    }
+
     public void setDirection(KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP: {

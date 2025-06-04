@@ -33,5 +33,7 @@ public class GameTable extends AbstractTableModel {
 
     public synchronized void setValueAt(int rowIndex, int columnIndex, GameField value) {
         this.gameTable[rowIndex][columnIndex] = value;
+        this.fireTableCellUpdated(rowIndex, columnIndex);
     }
+
 }

@@ -3,38 +3,38 @@ package renderers;
 import controllers.GameController;
 import enums.GameField;
 import enums.GhostName;
-import models.GameModel;
 
 import javax.swing.*;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.io.IOException;
 import java.util.Map;
 
 public class TableCell extends JLabel implements TableCellRenderer {
     private GameField gameField;
 
-    private Image pacmanOpenImgRight;
-    private Image pacmanMidImgRight;
-    private Image pacmanClosedImgRight;
+    private ImageIcon pacmanOpenImgRight;
+    private ImageIcon pacmanMidImgRight;
+    private ImageIcon pacmanClosedImgRight;
 
-    private Image pacmanOpenImgLeft;
-    private Image pacmanMidImgLeft;
-    private Image pacmanClosedImgLeft;
+    private ImageIcon pacmanOpenImgLeft;
+    private ImageIcon pacmanMidImgLeft;
+    private ImageIcon pacmanClosedImgLeft;
 
-    private Image pacmanOpenImgUp;
-    private Image pacmanMidImgUp;
-    private Image pacmanClosedImgUp;
+    private ImageIcon pacmanOpenImgUp;
+    private ImageIcon pacmanMidImgUp;
+    private ImageIcon pacmanClosedImgUp;
 
-    private Image pacmanOpenImgDown;
-    private Image pacmanMidImgDown;
-    private Image pacmanClosedImgDown;
+    private ImageIcon pacmanOpenImgDown;
+    private ImageIcon pacmanMidImgDown;
+    private ImageIcon pacmanClosedImgDown;
 
-    private Image blinkyImg;
-    private Image clydeImg;
-    private Image inkyImg;
-    private Image pinkyImg;
-    private Image blueImg;
+    private ImageIcon blinkyImg;
+    private ImageIcon clydeImg;
+    private ImageIcon inkyImg;
+    private ImageIcon pinkyImg;
+    private ImageIcon blueImg;
+
+    private int cellSize;
 
 
     private GameController gameController;
@@ -42,6 +42,8 @@ public class TableCell extends JLabel implements TableCellRenderer {
     public TableCell(GameController gameController) {
 
         this.gameController = gameController;
+
+        cellSize = gameController.getCellSize();
 
         setOpaque(true);
 
@@ -89,27 +91,27 @@ public class TableCell extends JLabel implements TableCellRenderer {
         Image pinkyImgOg = pinkyImgIcon.getImage();
         Image blueImgOg = blueImgIcon.getImage();
 
-        pacmanOpenImgRight = pacmanOpenImgRightOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        pacmanMidImgRight = pacmanMidImgRightOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        pacmanClosedImgRight = pacmanClosedImgRightOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
+        pacmanOpenImgRight = new ImageIcon (pacmanOpenImgRightOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        pacmanMidImgRight = new ImageIcon(pacmanMidImgRightOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        pacmanClosedImgRight = new ImageIcon(pacmanClosedImgRightOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
 
-        pacmanOpenImgLeft = pacmanOpenImgLeftOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        pacmanMidImgLeft = pacmanMidImgLeftOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        pacmanClosedImgLeft = pacmanClosedImgLeftOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
+        pacmanOpenImgLeft = new ImageIcon(pacmanOpenImgLeftOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        pacmanMidImgLeft = new ImageIcon(pacmanMidImgLeftOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        pacmanClosedImgLeft = new ImageIcon(pacmanClosedImgLeftOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
 
-        pacmanOpenImgUp = pacmanOpenImgUpOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        pacmanMidImgUp = pacmanMidImgUpOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        pacmanClosedImgUp = pacmanClosedImgUpOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
+        pacmanOpenImgUp = new ImageIcon(pacmanOpenImgUpOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        pacmanMidImgUp = new ImageIcon(pacmanMidImgUpOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        pacmanClosedImgUp = new ImageIcon(pacmanClosedImgUpOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
 
-        pacmanOpenImgDown = pacmanOpenImgDownOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        pacmanMidImgDown = pacmanMidImgDownOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        pacmanClosedImgDown = pacmanClosedImgDownOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
+        pacmanOpenImgDown = new ImageIcon(pacmanOpenImgDownOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        pacmanMidImgDown = new ImageIcon(pacmanMidImgDownOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        pacmanClosedImgDown = new ImageIcon(pacmanClosedImgDownOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
 
-        blinkyImg = blinkyImgOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        clydeImg = clydeImgOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        inkyImg = inkyImgOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        pinkyImg = pinkyImgOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
-        blueImg = blueImgOg.getScaledInstance(24, 24, Image.SCALE_DEFAULT);
+        blinkyImg = new ImageIcon(blinkyImgOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        clydeImg = new ImageIcon(clydeImgOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        inkyImg = new ImageIcon(inkyImgOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        pinkyImg = new ImageIcon(pinkyImgOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
+        blueImg = new ImageIcon(blueImgOg.getScaledInstance(cellSize, cellSize, Image.SCALE_DEFAULT));
     }
 
     @Override
@@ -137,22 +139,22 @@ public class TableCell extends JLabel implements TableCellRenderer {
                         case 0: {
                             switch (gameController.getDirection()) {
                                 case RIGHT: {
-                                    setIcon(new ImageIcon(pacmanOpenImgRight));
+                                    setIcon(pacmanOpenImgRight);
                                     break;
                                 }
 
                                 case LEFT: {
-                                    setIcon(new ImageIcon(pacmanOpenImgLeft));
+                                    setIcon(pacmanOpenImgLeft);
                                     break;
                                 }
 
                                 case UP: {
-                                    setIcon(new ImageIcon(pacmanOpenImgUp));
+                                    setIcon(pacmanOpenImgUp);
                                     break;
                                 }
 
                                 case DOWN: {
-                                    setIcon(new ImageIcon(pacmanOpenImgDown));
+                                    setIcon(pacmanOpenImgDown);
                                     break;
                                 }
                             }
@@ -162,22 +164,22 @@ public class TableCell extends JLabel implements TableCellRenderer {
                         case 1: {
                             switch (gameController.getDirection()) {
                                 case RIGHT: {
-                                    setIcon(new ImageIcon(pacmanMidImgRight));
+                                    setIcon(pacmanMidImgRight);
                                     break;
                                 }
 
                                 case LEFT: {
-                                    setIcon(new ImageIcon(pacmanMidImgLeft));
+                                    setIcon(pacmanMidImgLeft);
                                     break;
                                 }
 
                                 case UP: {
-                                    setIcon(new ImageIcon(pacmanMidImgUp));
+                                    setIcon(pacmanMidImgUp);
                                     break;
                                 }
 
                                 case DOWN: {
-                                    setIcon(new ImageIcon(pacmanMidImgDown));
+                                    setIcon(pacmanMidImgDown);
                                     break;
                                 }
                             }
@@ -187,22 +189,22 @@ public class TableCell extends JLabel implements TableCellRenderer {
                         case 2: {
                             switch (gameController.getDirection()) {
                                 case RIGHT: {
-                                    setIcon(new ImageIcon(pacmanClosedImgRight));
+                                    setIcon(pacmanClosedImgRight);
                                     break;
                                 }
 
                                 case LEFT: {
-                                    setIcon(new ImageIcon(pacmanClosedImgLeft));
+                                    setIcon(pacmanClosedImgLeft);
                                     break;
                                 }
 
                                 case UP: {
-                                    setIcon(new ImageIcon(pacmanClosedImgUp));
+                                    setIcon(pacmanClosedImgUp);
                                     break;
                                 }
 
                                 case DOWN: {
-                                    setIcon(new ImageIcon(pacmanClosedImgDown));
+                                    setIcon(pacmanClosedImgDown);
                                     break;
                                 }
                             }
@@ -218,26 +220,26 @@ public class TableCell extends JLabel implements TableCellRenderer {
                         for (Map.Entry<GhostName, Point> enemy : enemyPos.entrySet()) {
                             if (enemy.getValue().x == row && enemy.getValue().y == column) {
                                 if (gameController.getKillPowerUp()) {
-                                    setIcon(new ImageIcon(blueImg));
+                                    setIcon(blueImg);
                                 } else {
                                     switch (enemy.getKey()) {
                                         case BLINKY: {
-                                            setIcon(new ImageIcon(blinkyImg));
+                                            setIcon(blinkyImg);
                                             break;
                                         }
 
                                         case CLYDE: {
-                                            setIcon(new ImageIcon(clydeImg));
+                                            setIcon(clydeImg);
                                             break;
                                         }
 
                                         case INKY: {
-                                            setIcon(new ImageIcon(inkyImg));
+                                            setIcon(inkyImg);
                                             break;
                                         }
 
                                         case PINKY: {
-                                            setIcon(new ImageIcon(pinkyImg));
+                                            setIcon(pinkyImg);
                                             break;
                                         }
                                     }
@@ -259,16 +261,20 @@ public class TableCell extends JLabel implements TableCellRenderer {
         switch (gameField) {
             case DOT: {
                 g.setColor(Color.WHITE);
-                g.fillOval(getWidth() / 2 - 2, getHeight() / 2 - 2, 4, 4);
+                int dotWidth = cellSize / 5;
+                int dotHeight = cellSize / 5;
+                g.fillOval(getWidth() / 2 - (dotWidth/2), getHeight() / 2 - (dotHeight/2), dotWidth, dotHeight);
                 break;
             }
 
             case POWERUP: {
                 if (gameController.getPowerUpFrame())
-                    g.setColor(Color.WHITE);
+                    g.setColor(Color.YELLOW);
                 else
                     g.setColor(Color.BLACK);
-                g.fillOval(getWidth() / 2 - 8, getHeight() / 2 - 8, 16, 16);
+                int powerUpWidth = (cellSize / 2) + 2;
+                int powerUpHeight = (cellSize / 2) + 2;
+                g.fillOval(getWidth() / 2 - (powerUpWidth/2), getHeight() / 2 - (powerUpHeight/2), powerUpWidth, powerUpHeight);
             }
         }
     }
