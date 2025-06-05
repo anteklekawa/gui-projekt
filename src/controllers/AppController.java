@@ -5,6 +5,7 @@ import enums.AppState;
 import models.AppModel;
 import models.GameModel;
 import views.ChooseSizeView;
+import views.HighScoreView;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -62,12 +63,15 @@ public class AppController {
     class ChooseSizeListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            showMenu();
             appModel.setMapSize(chooseSizeView.getMapSize(), AppController.this);
         }
     }
 
     public void showRanking() {
+        appState = AppState.RANKING;
 
+        SwingUtilities.invokeLater(() -> new HighScoreView(this));
     }
 
     public AppState getAppState() {

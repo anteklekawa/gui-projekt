@@ -123,8 +123,6 @@ public class TableCell extends JLabel implements TableCellRenderer {
         this.row = row;
         this.column = column;
 
-        cellSize = gameController.getCellSize();
-
         setIcon(null);
         setText("");
 

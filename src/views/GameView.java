@@ -77,6 +77,12 @@ public class GameView extends JFrame {
 
         setContentPane(mainPanel);
 
+        if (gameController.isMapSmall()) {
+            timerText.setFont(new Font("Arial", Font.BOLD, 10));
+            gamePoints.setFont(new Font("Arial", Font.BOLD, 10));
+            lifeCounter.setFont(new Font("Arial", Font.BOLD, 10));
+        }
+
         pack();
 
         setLocationRelativeTo(null);

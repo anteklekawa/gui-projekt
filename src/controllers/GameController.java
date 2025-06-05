@@ -1,5 +1,6 @@
 package controllers;
 
+import components.HighScore;
 import enums.Direction;
 import enums.GameField;
 import enums.GhostName;
@@ -18,6 +19,8 @@ import java.util.Map;
 public class GameController {
     private GameView gameView;
     private GameModel gameModel;
+    private HighScore highScoreManager;
+    private AppController appController;
 
     private TimerThread timerThread;
 
@@ -30,6 +33,10 @@ public class GameController {
 
     public GameController(AppController appController, GameTable gameTable) {
         gameModel = new GameModel(this, gameTable);
+
+        this.appController = appController;
+
+        highScoreManager = new HighScore();
 
         SwingUtilities.invokeLater(() -> {
             gameView = new GameView(this);
@@ -62,19 +69,41 @@ public class GameController {
         new Thread(timerThread).start();
     }
 
+    public void stopAllThreads() {
+        ghostsMove.interrupt();
+
+        animThread.interrupt();
+        pacmanMove.interrupt();
+
+        timerThread.interrupt();
+
+        dropPowerUps.interrupt();
+    }
+
     public void endGame() {
-        animThread.stop();
-        pacmanMove.stop();
+        boolean isNicknameSet = false;
+        String playerNick = "Unknown";
 
-        timerThread.stop();
+        while (!isNicknameSet) {
+            playerNick = JOptionPane.showInputDialog(gameView, "You lost! \n\n Your score was: " + gameModel.getGamePoints() + "\n\n Type in your name:");
 
-        ghostsMove.stop();
+            if (playerNick.length() > 16)
+                JOptionPane.showMessageDialog(gameView, "Your name is too long! (Max 24 chars)");
+            else
+                isNicknameSet = true;
+        }
 
-        dropPowerUps.stop();
+        int score = gameModel.getGamePoints();
 
-        JOptionPane.showMessageDialog(null, "You lost!");
+        highScoreManager.saveHighScore(playerNick, score);
+
+        gameModel = null;
 
         gameView.dispose();
+    }
+
+    public boolean isMapSmall() {
+        return gameModel.isMapSmall();
     }
 
     public void updateTimer() {
@@ -100,7 +129,8 @@ public class GameController {
     }
 
     public void addSec() {
-        gameModel.addSec();
+        if (gameModel != null)
+            gameModel.addSec();
     }
 
     public void powerUpKill() {
@@ -186,6 +216,13 @@ public class GameController {
                 break;
             }
         }
+
+        if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
+            stopAllThreads();
+            gameModel = null;
+            gameView.dispose();
+            appController.showMenu();
+        }
     }
 
     public Direction getDirection() {
@@ -193,11 +230,13 @@ public class GameController {
     }
 
     public synchronized void pacmanMove() {
-        gameModel.movePacman();
+        if (gameModel != null)
+            gameModel.movePacman();
     }
 
     public synchronized void ghostsMove(GhostName ghostsName) {
-        gameModel.moveGhosts(ghostsName);
+        if (gameModel != null)
+            gameModel.moveGhosts(ghostsName);
     }
 
     public synchronized GameTable getGameTable() {
@@ -230,7 +269,8 @@ public class GameController {
     }
 
     public synchronized void setPacmanFrame(int pacmanFrame) {
-        gameModel.setPacmanFrame(pacmanFrame);
+        if (gameModel != null)
+            gameModel.setPacmanFrame(pacmanFrame);
     }
 
     public void setEnemysLocation() {
@@ -242,6 +282,7 @@ public class GameController {
     }
 
     public synchronized void dropPowerUp(GhostName ghostName) {
-        gameModel.dropPowerUp(ghostName);
+        if (gameModel != null)
+            gameModel.dropPowerUp(ghostName);
     }
 }

@@ -2,7 +2,7 @@ package threads;
 
 import controllers.GameController;
 
-public class TimerThread implements Runnable {
+public class TimerThread extends Thread {
     private boolean isRunning = true;
     private GameController gameController;
 
@@ -23,7 +23,9 @@ public class TimerThread implements Runnable {
         }
     }
 
-    public void stop() {
+    @Override
+    public void interrupt() {
+        super.interrupt();
         isRunning = false;
     }
 }

@@ -80,6 +80,13 @@ public class GameModel {
         }
     }
 
+    public boolean isMapSmall() {
+        if (gameTable.getRowCount() < 20)
+            return true;
+        else
+            return false;
+    }
+
     public void addSec() {
         tenths += 1;
         if (tenths >= 100) {
@@ -140,7 +147,6 @@ public class GameModel {
         return cellSize;
     }
 
-
     public boolean getKillPowerUp() {
         return killPowerUp;
     }
@@ -155,6 +161,12 @@ public class GameModel {
 
     public boolean getPowerUpFrame() {
         return powerUpFrame;
+    }
+
+    public void gameOver() {
+        gameController.stopAllThreads();
+        gameEnded = true;
+        gameController.endGame();
     }
 
     public synchronized void movePacman() {
@@ -192,8 +204,8 @@ public class GameModel {
         }
 
         if (enemyPos.containsValue(new Point(newPosRow, newPosColumn)) && !gameEnded && !killPowerUp) {
-            gameEnded = true;
-            gameController.endGame();
+            gameOver();
+            return;
         }
 
         if (enemyPos.containsValue(new Point(newPosRow, newPosColumn)) && killPowerUp) {
@@ -293,8 +305,8 @@ public class GameModel {
             }
 
             if ((pacmanPos.x == newPosRow && pacmanPos.y == newPosColumn) && !gameEnded && !killPowerUp) {
-                gameEnded = true;
-                gameController.endGame();
+                gameOver();
+                return;
             }
 
             if ((pacmanPos.x == newPosRow && pacmanPos.y == newPosColumn) && killPowerUp) {

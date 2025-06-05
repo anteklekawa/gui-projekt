@@ -5,7 +5,7 @@ import enums.GhostName;
 
 import javax.swing.*;
 
-public class DropPowerup implements Runnable {
+public class DropPowerup extends Thread {
     private boolean isRunning = true;
     private GameController gameController;
     private GhostName[] ghostNames;
@@ -35,7 +35,9 @@ public class DropPowerup implements Runnable {
         }
     }
 
-    public void stop() {
+    @Override
+    public void interrupt() {
+        super.interrupt();
         isRunning = false;
     }
 

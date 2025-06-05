@@ -3,7 +3,7 @@ package threads;
 import components.GameTable;
 import controllers.GameController;
 
-public class AnimThread implements Runnable {
+public class AnimThread extends Thread {
     private int pacmanFrame = 0;
     private int frameDirection = 1;
     private boolean isRunning = true;
@@ -45,7 +45,9 @@ public class AnimThread implements Runnable {
         gameController.setPowerUpFrame(powerUpFrame);
     }
 
-    public void stop() {
+    @Override
+    public void interrupt() {
+        super.interrupt();
         isRunning = false;
     }
 }

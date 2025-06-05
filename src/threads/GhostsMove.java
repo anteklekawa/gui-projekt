@@ -5,7 +5,7 @@ import enums.GhostName;
 
 import javax.swing.*;
 
-public class GhostsMove implements Runnable {
+public class GhostsMove extends Thread {
     private GameController gameController;
     private boolean areGhostsMoving;
     private GhostName[] ghostNames;
@@ -39,7 +39,9 @@ public class GhostsMove implements Runnable {
         }
     }
 
-    public void stop() {
+    @Override
+    public void interrupt() {
+        super.interrupt();
         areGhostsMoving = false;
     }
 

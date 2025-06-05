@@ -4,7 +4,7 @@ import controllers.GameController;
 
 import javax.swing.*;
 
-public class PacmanMove implements Runnable {
+public class PacmanMove extends Thread {
     private GameController gameController;
     private boolean isPacmanMoving;
 
@@ -33,7 +33,9 @@ public class PacmanMove implements Runnable {
         }
     }
 
-    public void stop() {
+    @Override
+    public void interrupt() {
+        super.interrupt();
         isPacmanMoving = false;
     }
 }
